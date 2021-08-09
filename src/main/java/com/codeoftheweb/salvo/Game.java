@@ -4,8 +4,12 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.toList;
 
 @Entity
@@ -37,6 +41,29 @@ public class Game {
 
     public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
+    /*Setter y Getter para getId para el uso del SalvoController*/
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /*Creacion de un mapa con string y objeto*/
+    public Map<String, Object> makeGameDTO(){
+        Map<String, Object>     dto = new LinkedHashMap<>();
+        dto.put("id",   this.getId());
+        dto.put("created",    this.getCreationDate());
+        dto.put("gamePlayers",  this.getGamePlayers()
+                .stream()
+                .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
+                .collect(Collectors.toList()));
+
+    return dto;
+    }
+
+    /*Uso del JsonIgnore*/
     @JsonIgnore
     public List<Player> getPlayers() {
         return gamePlayers.stream().map(sub -> sub.getPlayerID()).collect(toList());

@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,8 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+
 import static java.util.stream.Collectors.toList;
 
 @Entity
@@ -42,10 +48,26 @@ public class Player {
     public String getUserName() { return userName; }
 
     /*Funcion donde uno setea el userName para la clase*/
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String userName) { this.userName = userName; }
+
+    /*Setter y Getter para getId para el uso del SalvoController*/
+    public Long getId() {
+        return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Map<String, Object> makePlayerDTO(){
+        Map<String, Object>     dto = new LinkedHashMap<>();
+        dto.put("id",   this.getId());
+        dto.put("email",    this.userName);
+
+        return dto;
+    }
+
+    @JsonIgnore
     public List<Game> getGames() {
         return gamePlayers.stream().map(sub -> sub.getGameID()).collect(toList());
     }

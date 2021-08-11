@@ -31,33 +31,20 @@ public class Player {
     @OneToMany(mappedBy="playerID", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
-    /*Set y Get de las variables del OneToMany*/
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
-    }
-
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
-    }
-
     /*Constructores por default --> Metodo de la clase que se llama automaticamente cada vez que se crea un objeto*/
     public Player() { }
-    public Player(String userName) { this.userName = userName; }
 
-    /*Funciones donde el get devuelve el userName que tiene en ese momento la clase Player*/
+    public Player(String userName) {
+        this.userName = userName;
+    }
+
+    public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
     public String getUserName() { return userName; }
+    public Long getId() { return id; }
 
-    /*Funcion donde uno setea el userName para la clase*/
     public void setUserName(String userName) { this.userName = userName; }
-
-    /*Setter y Getter para getId para el uso del SalvoController*/
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) { this.gamePlayers = gamePlayers; }
 
     public Map<String, Object> makePlayerDTO(){
         Map<String, Object>     dto = new LinkedHashMap<>();

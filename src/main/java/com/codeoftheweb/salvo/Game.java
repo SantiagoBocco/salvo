@@ -25,28 +25,19 @@ public class Game {
     @OneToMany(mappedBy="gameID", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
-    /*Set y Get de las variables del OneToMany*/
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
-    }
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
-    }
-
-    /*Usamos string en el caso de Player y LocalDateTime para este, estas variables ayudan a la clase*/
     public Game() { }
 
-    public Game(LocalDateTime creationDate) { this.creationDate = creationDate; }
-    public LocalDateTime getCreationDate() { return creationDate; }
-    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
+    public Game(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
 
-    /*Setter y Getter para getId para el uso del SalvoController*/
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public LocalDateTime getCreationDate() { return creationDate; }
+    public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
+    public Long getId() { return id; }
+
+    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) { this.gamePlayers = gamePlayers; }
+    public void setId(Long id) { this.id = id; }
 
     /*Creacion de un mapa con string y objeto*/
     public Map<String, Object> makeGameDTO(){
@@ -57,7 +48,6 @@ public class Game {
                 .stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
                 .collect(Collectors.toList()));
-
     return dto;
     }
 

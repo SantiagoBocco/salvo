@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -27,35 +29,32 @@ public class Ship {
 
     public Ship() { }
 
-    public Ship(Long id, String type, List<String> locations, GamePlayer gamePlayerID) {
-        this.id = id;
+    /*Constructores de las variables, al mismo orden del salvo.*/
+    /*ID y set no se ponene constructor*/
+    public Ship(String type, GamePlayer gamePlayerID, List<String> locations) {
         this.type = type;
+        this.gamePlayerID = gamePlayerID;
         this.locations = locations;
-        this.gamePlayerID = gamePlayerID;
     }
 
-    public GamePlayer getGamePlayerID() {
-        return gamePlayerID;
-    }
-    public Long getId() {
-        return id;
-    }
-    public String getType() {
-        return type;
-    }
-    public List<String> getLocations() {
-        return locations;
-    }
+    public GamePlayer getGamePlayerID() { return gamePlayerID; }
+    public Long getId() { return id; }
+    public String getType() { return type; }
+    public List<String> getLocations() { return locations; }
 
-    public void setGamePlayerID(GamePlayer gamePlayerID) {
-        this.gamePlayerID = gamePlayerID;
-    }
+    public void setGamePlayerID(GamePlayer gamePlayerID) { this.gamePlayerID = gamePlayerID; }
     public void setId(Long id) { this.id = id; }
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String type) { this.type = type; }
+    public void setLocations(List<String> locations) { this.locations = locations; }
+
+    public Map<String, Object> makeShipDTO(){
+        Map<String, Object>     dto = new LinkedHashMap<>();
+        dto.put("type",this.getType());
+        dto.put("locations",this.getLocations());
+
+
+        return dto;
     }
-    public void setLocations(List<String> locations) {
-        this.locations = locations;
-    }
+
 
 }

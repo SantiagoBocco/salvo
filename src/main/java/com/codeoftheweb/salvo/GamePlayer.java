@@ -28,7 +28,7 @@ public class GamePlayer {
     private Game gameID;
 
     @OneToMany(mappedBy="gamePlayerID", fetch=FetchType.EAGER)
-    Set<Ship> ships;
+    Set<Ship> ship;
 
     public GamePlayer() { }
 
@@ -44,7 +44,7 @@ public class GamePlayer {
     public Player getPlayerID() { return playerID; }
     public LocalDateTime getJoinDate() { return joinDate; }
     public Long getId() { return id; }
-    public Set<Ship> getShips() { return ships; }
+    public Set<Ship> getShip() { return ship; }
 
     public void setGameID(Game gameID) { this.gameID = gameID; }
     public void setPlayerID(Player playerID) { this.playerID = playerID; }
@@ -52,13 +52,17 @@ public class GamePlayer {
     public void setId(Long id) {
         this.id = id;
     }
-    public void setShips(Set<Ship> ships) { this.ships = ships; }
+    public void setShip(Set<Ship> ship) { this.ship = ship; }
 
     /*Mapa de string y objeto*/
     public Map<String, Object> makeGamePlayerDTO(){
         Map<String, Object>     dto = new LinkedHashMap<>();
         dto.put("id",   this.getId());
         dto.put("player",this.getPlayerID().makePlayerDTO() );
+        dto.put("ship",this.getShip()
+                .stream()
+                .map(ship -> ship.makeShipDTO())
+                .collect(Collectors.toList()));
 
         return dto;
     }

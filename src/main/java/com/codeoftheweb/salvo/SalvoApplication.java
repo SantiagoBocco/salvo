@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @SpringBootApplication
 public class SalvoApplication {
@@ -14,7 +15,7 @@ public class SalvoApplication {
 
 		/*Se insertan variables en la clase principal --> Se fuerzan objetos*/
 		@Bean
-		public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gameplayerRepository) {
+		public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gameplayerRepository, ShipRepository shipRepository) {
 		return (args) -> {
 
 		/*La lista de clases Player con su respectiva variable en userName*/
@@ -72,7 +73,16 @@ public class SalvoApplication {
 		gameplayerRepository.save(gameplayer10);
 		gameplayerRepository.save(gameplayer11);
 
-		;
+		Ship ship1 = new Ship("Destroyer", gameplayer1, Arrays.asList("H1","H2"));
+		Ship ship2 = new Ship("Cruiser", gameplayer1, Arrays.asList("H1","H2","H3"));
+		Ship ship3 = new Ship("Submarine", gameplayer1, Arrays.asList("H1","H2","H3"));
+		Ship ship4 = new Ship("Battleship", gameplayer1, Arrays.asList("H1","H2","H3","H4"));
+
+		shipRepository.save(ship1);
+		shipRepository.save(ship2);
+		shipRepository.save(ship3);
+		shipRepository.save(ship4);
+
 		};
 		}
 }

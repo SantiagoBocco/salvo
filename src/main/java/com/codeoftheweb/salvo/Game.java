@@ -35,17 +35,15 @@ public class Game {
 
     /*Usamos string en el caso de Player y LocalDateTime para este, estas variables ayudan a la clase*/
     public Game() { }
+
     public Game(LocalDateTime creationDate) { this.creationDate = creationDate; }
-
     public LocalDateTime getCreationDate() { return creationDate; }
-
     public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
     /*Setter y Getter para getId para el uso del SalvoController*/
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }

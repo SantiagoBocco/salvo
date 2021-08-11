@@ -1,17 +1,13 @@
 package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.FetchType;
 
 @Entity
 public class GamePlayer {
@@ -31,6 +27,9 @@ public class GamePlayer {
     @JoinColumn(name="game_id")
     private Game gameID;
 
+    @OneToMany(mappedBy="gamePlayerID", fetch=FetchType.EAGER)
+    Set<Ship> ships;
+
     public GamePlayer() { }
 
     /*Constructores de cada uno de los atributos*/
@@ -44,12 +43,18 @@ public class GamePlayer {
     public Game getGameID() { return gameID; }
     public Player getPlayerID() { return playerID; }
     public LocalDateTime getJoinDate() { return joinDate; }
+    public Long getId() { return id; }
+    public Set<Ship> getShips() { return ships; }
 
     public void setGameID(Game gameID) { this.gameID = gameID; }
     public void setPlayerID(Player playerID) { this.playerID = playerID; }
     public void setJoinDate(LocalDateTime joinDate) { this.joinDate = joinDate; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public void setShips(Set<Ship> ships) { this.ships = ships; }
 
-
+    /*Mapa de string y objeto*/
     public Map<String, Object> makeGamePlayerDTO(){
         Map<String, Object>     dto = new LinkedHashMap<>();
         dto.put("id",   this.getId());
@@ -58,11 +63,4 @@ public class GamePlayer {
         return dto;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

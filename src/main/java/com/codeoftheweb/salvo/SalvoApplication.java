@@ -74,9 +74,9 @@ public class SalvoApplication {
 		gameplayerRepository.save(gameplayer11);
 
 		Ship ship1 = new Ship("Destroyer", gameplayer1, Arrays.asList("H1","H2"));
-		Ship ship2 = new Ship("Cruiser", gameplayer1, Arrays.asList("H1","H2","H3"));
-		Ship ship3 = new Ship("Submarine", gameplayer1, Arrays.asList("H1","H2","H3"));
-		Ship ship4 = new Ship("Battleship", gameplayer1, Arrays.asList("H1","H2","H3","H4"));
+		Ship ship2 = new Ship("Cruiser", gameplayer1, Arrays.asList("A1","A2","A3"));
+		Ship ship3 = new Ship("Submarine", gameplayer1, Arrays.asList("B1","B2","B3"));
+		Ship ship4 = new Ship("Battleship", gameplayer1, Arrays.asList("C1","C2","C3","C4"));
 
 		shipRepository.save(ship1);
 		shipRepository.save(ship2);

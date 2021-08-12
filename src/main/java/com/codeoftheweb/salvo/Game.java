@@ -22,14 +22,12 @@ public class Game {
     private LocalDateTime creationDate;
 
     /*OneToMany union de Game con GamePlayer*/
-    @OneToMany(mappedBy="gameID", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
     public Game() { }
 
-    public Game(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
+    public Game(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
     public LocalDateTime getCreationDate() { return creationDate; }
     public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
@@ -54,7 +52,7 @@ public class Game {
     /*Uso del JsonIgnore*/
     @JsonIgnore
     public List<Player> getPlayers() {
-        return gamePlayers.stream().map(sub -> sub.getPlayerID()).collect(toList());
+        return gamePlayers.stream().map(sub -> sub.getPlayer()).collect(toList());
     }
 
 }

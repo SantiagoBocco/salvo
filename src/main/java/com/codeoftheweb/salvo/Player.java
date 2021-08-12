@@ -12,8 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,7 +26,7 @@ public class Player {
     private String userName;
 
     /*OneToMany union de Player con GamePlayer*/
-    @OneToMany(mappedBy="playerID", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
     /*Constructores por default --> Metodo de la clase que se llama automaticamente cada vez que se crea un objeto*/
@@ -56,7 +54,7 @@ public class Player {
 
     @JsonIgnore
     public List<Game> getGames() {
-        return gamePlayers.stream().map(sub -> sub.getGameID()).collect(toList());
+        return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
     }
 
 }

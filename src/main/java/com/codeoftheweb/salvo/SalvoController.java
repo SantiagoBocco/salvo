@@ -30,7 +30,7 @@ public class SalvoController {
         
         GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).get();
         
-        return gamePlayer.getGameID().makeGameDTO();
+        return gamePlayer.makeGameViewDTO();
         }
 
     }

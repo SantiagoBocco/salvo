@@ -15,7 +15,7 @@ public class SalvoApplication {
 
 		/*Se insertan variables en la clase principal --> Se fuerzan objetos*/
 		@Bean
-		public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gameplayerRepository, ShipRepository shipRepository) {
+		public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gameplayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository) {
 		return (args) -> {
 
 		/*La lista de clases Player con su respectiva variable en userName*/
@@ -82,6 +82,11 @@ public class SalvoApplication {
 		shipRepository.save(ship2);
 		shipRepository.save(ship3);
 		shipRepository.save(ship4);
+
+		Salvo salvo1 = new Salvo(1L, Arrays.asList("H1", "H2"),gameplayer1);
+
+		salvoRepository.save(salvo1);
+
 
 		};
 		}

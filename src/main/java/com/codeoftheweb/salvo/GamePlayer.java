@@ -27,8 +27,8 @@ public class GamePlayer {
     @JoinColumn(name="game_id")
     private Game game;
 
-    @OneToMany(mappedBy="gamePlayerID", fetch=FetchType.EAGER)
-    Set<Ship> ship;
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    private Set<Ship> ship;
 
     public GamePlayer() { }
 

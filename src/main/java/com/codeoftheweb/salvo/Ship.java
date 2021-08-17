@@ -14,6 +14,7 @@ public class Ship {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
+
     private String type;
 
     @ElementCollection
@@ -22,24 +23,24 @@ public class Ship {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
-    private GamePlayer gamePlayerID;
+    private GamePlayer gamePlayer;
 
     public Ship() { }
 
     /*Constructores de las variables, al mismo orden del salvo.*/
     /*ID no se pone constructor*/
-    public Ship(String type, GamePlayer gamePlayerID, List<String> locations) {
+    public Ship(String type, GamePlayer gamePlayer, List<String> locations) {
         this.type = type;
-        this.gamePlayerID = gamePlayerID;
+        this.gamePlayer = gamePlayer;
         this.locations = locations;
     }
 
-    public GamePlayer getGamePlayerID() { return gamePlayerID; }
+    public GamePlayer getGamePlayer() { return gamePlayer; }
     public Long getId() { return id; }
     public String getType() { return type; }
     public List<String> getLocations() { return locations; }
 
-    public void setGamePlayerID(GamePlayer gamePlayerID) { this.gamePlayerID = gamePlayerID; }
+    public void setGamePlayer(GamePlayer gamePlayer) { this.gamePlayer = gamePlayer; }
     public void setId(Long id) { this.id = id; }
     public void setType(String type) { this.type = type; }
     public void setLocations(List<String> locations) { this.locations = locations; }

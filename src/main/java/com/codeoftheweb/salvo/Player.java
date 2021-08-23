@@ -29,6 +29,9 @@ public class Player {
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<Score> score;
+
     /*Constructores por default --> Metodo de la clase que se llama automaticamente cada vez que se crea un objeto*/
     public Player() { }
 

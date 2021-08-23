@@ -15,7 +15,7 @@ public class SalvoApplication {
 
 		/*Se insertan variables en la clase principal --> Se fuerzan objetos*/
 		@Bean
-		public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gameplayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository) {
+		public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gameplayerRepository, ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository) {
 		return (args) -> {
 
 		/*La lista de clases Player con su respectiva variable en userName*/
@@ -103,6 +103,11 @@ public class SalvoApplication {
 		salvoRepository.save(salvo3);
 		salvoRepository.save(salvo4);
 
+		Score score1 = new Score(2d, LocalDateTime.now(), player1, game1);
+		Score score2 = new Score(1d, LocalDateTime.now(), player2, game1);
+
+		scoreRepository.save(score1);
+		scoreRepository.save(score2);
 
 		};
 		}

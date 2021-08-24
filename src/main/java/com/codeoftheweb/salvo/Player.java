@@ -8,10 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.FetchType;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,7 +27,7 @@ public class Player {
     Set<GamePlayer> gamePlayers;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<Score> score;
+    Set<Score> scores;
 
     /*Constructores por default --> Metodo de la clase que se llama automaticamente cada vez que se crea un objeto*/
     public Player() { }
@@ -42,10 +39,14 @@ public class Player {
     public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
     public String getUserName() { return userName; }
     public Long getId() { return id; }
+    public Set<Score> getScores() { return scores; }
 
     public void setUserName(String userName) { this.userName = userName; }
     public void setId(Long id) { this.id = id; }
     public void setGamePlayers(Set<GamePlayer> gamePlayers) { this.gamePlayers = gamePlayers; }
+    public void setScores(Set<Score> scores) {
+        this.scores = scores;
+    }
 
     public Map<String, Object> makePlayerDTO(){
         Map<String, Object>     dto = new LinkedHashMap<>();
@@ -53,6 +54,13 @@ public class Player {
         dto.put("email",    this.userName);
 
         return dto;
+    }
+
+    Optional<Score> getScore (Game game)
+    {
+        return this.getScores()
+                .stream()
+                .filter(sc -> sc.getGame().getId().equals(game.getId())).findFirst();
     }
 
     @JsonIgnore

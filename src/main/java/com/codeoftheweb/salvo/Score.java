@@ -3,6 +3,8 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
@@ -15,7 +17,7 @@ public class Score {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
-    private Double score;
+    private Float score;
     private LocalDateTime finishDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -28,22 +30,29 @@ public class Score {
 
     public Score() { }
 
-    public Score(Double score, LocalDateTime finishDate, Player player, Game game) {
+    public Score(Float score, LocalDateTime finishDate, Player player, Game game) {
         this.score = score;
         this.finishDate = finishDate;
         this.player = player;
         this.game = game;
     }
 
-    public void setScore(Double score) { this.score = score; }
-    public void setId(Long id) { this.id = id; }
+    public void setScore(Float score) { this.score = score; }
     public void setFinishDate(LocalDateTime finishDate) { this.finishDate = finishDate; }
     public void setPlayer(Player player) { this.player = player; }
     public void setGame(Game game) { this.game = game; }
 
-    public Double getScore() { return score; }
-    public Long getId() { return id; }
+    public Float getScore() { return score; }
     public LocalDateTime getFinishDate() { return finishDate; }
     public Player getPlayer() { return player; }
     public Game getGame() { return game; }
+
+    public Map<String, Object> makeScoreDTO() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("score" , this.getScore());
+        dto.put("finishDate" , this.getFinishDate());
+        dto.put("player" , this.getPlayer().getId());
+
+        return dto;
+    }
 }

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,4 +94,7 @@ public class GamePlayer {
         return dto;
     }
 
+    public Optional<Score> getScore() {
+        return this.getPlayer().getScore(this.getGame());
+    }
 }

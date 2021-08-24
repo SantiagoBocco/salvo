@@ -26,7 +26,7 @@ public class Game {
     Set<GamePlayer> gamePlayers;
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
-    Set<Score> score;
+    Set<Score> scores;
 
     public Game() { }
 
@@ -35,10 +35,12 @@ public class Game {
     public LocalDateTime getCreationDate() { return creationDate; }
     public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
     public Long getId() { return id; }
+    public Set<Score> getScores() { return scores; }
 
     public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
     public void setGamePlayers(Set<GamePlayer> gamePlayers) { this.gamePlayers = gamePlayers; }
     public void setId(Long id) { this.id = id; }
+    public void setScores(Set<Score> scores) { this.scores = scores; }
 
     /*Creacion de un mapa con string y objeto*/
     public Map<String, Object> makeGameDTO(){
@@ -49,6 +51,15 @@ public class Game {
                 .stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
                 .collect(Collectors.toList()));
+        dto.put("scores", this.getGamePlayers()
+                .stream()
+                .map(gamePlayer -> {if (gamePlayer.getScore().isPresent())
+                {
+                return gamePlayer.getScore().get().makeScoreDTO();
+                }
+                else {
+                return null;
+                }}));
     return dto;
     }
 

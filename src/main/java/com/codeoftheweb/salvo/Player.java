@@ -21,6 +21,7 @@ public class Player {
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
     private String userName;
+    private String password;
 
     /*OneToMany union de Player con GamePlayer*/
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
@@ -32,14 +33,16 @@ public class Player {
     /*Constructores por default --> Metodo de la clase que se llama automaticamente cada vez que se crea un objeto*/
     public Player() { }
 
-    public Player(String userName) {
+    public Player(String userName, String password) {
         this.userName = userName;
+        this.password = password;
     }
 
     public Set<GamePlayer> getGamePlayers() { return gamePlayers; }
     public String getUserName() { return userName; }
     public Long getId() { return id; }
     public Set<Score> getScores() { return scores; }
+    public String getPassword() { return password;}
 
     public void setUserName(String userName) { this.userName = userName; }
     public void setId(Long id) { this.id = id; }
@@ -47,6 +50,7 @@ public class Player {
     public void setScores(Set<Score> scores) {
         this.scores = scores;
     }
+    public void setPassword(String password) { this.password = password; }
 
     public Map<String, Object> makePlayerDTO(){
         Map<String, Object>     dto = new LinkedHashMap<>();

@@ -1,9 +1,16 @@
 package com.codeoftheweb.salvo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -19,10 +26,10 @@ public class SalvoApplication {
 		return (args) -> {
 
 		/*La lista de clases Player con su respectiva variable en userName*/
-		Player player1 = new Player("email1");
-		Player player2 = new Player("email2");
-		Player player3 = new Player("email3");
-		Player player4 = new Player("email4");
+		Player player1 = new Player("email1", "24");
+		Player player2 = new Player("email2", "42");
+		Player player3 = new Player("email3", "kb");
+		Player player4 = new Player("email4", "mole");
 
 		playerRepository.save(player1);
 		playerRepository.save(player2);
@@ -115,4 +122,25 @@ public class SalvoApplication {
 
 		};
 		}
+
+}
+/*Creacion de una sub-clase que toma las propiedades de security en el build gradle*/
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter{
+
+	@Autowired
+	PlayerRepository playerRepository;
+
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(inputName-> {
+			Player player = playerRepository.findByUserName(inputName);
+			if (player != null) {
+				return new User(player.getUserName(), player.getPassword(),
+						AuthorityUtils.createAuthorityList("USER"));
+			} else {
+				throw new UsernameNotFoundException("Unknown user: " + inputName);
+			}
+		});
+	}
 }

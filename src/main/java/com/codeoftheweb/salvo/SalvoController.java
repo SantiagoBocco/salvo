@@ -30,6 +30,8 @@ public class SalvoController {
     return dto;
     }
 
+    
+
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> findGamePlayer(@PathVariable Long gamePlayerId) {
         

@@ -58,7 +58,7 @@ public class Game {
                 return gamePlayer.getScore().get().makeScoreDTO();
                 }
                 else {
-                return null;
+                return "en curso";
                 }}));
     return dto;
     }

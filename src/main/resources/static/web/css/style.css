@@ -1,7 +1,16 @@
+ @font-face {
+      font-family: 'Green_Energy';
+      src: url('fonts/Green_Energy.ttf');
+      font-style: normal;
+      font-weight: normal;
+      }
+
 body {
     background: url(../img/back2.jpg);
-    font-family: 'Dosis', sans-serif;
-}
+    }
+
+    h1,h2,h3,h4,h5,h6, .movingMsgBig, #gamesList thead{
+    font-family: 'Green_Energy' !important;}
 
 .bannerTitle {
     margin: 15px auto 0;
@@ -166,42 +175,54 @@ body {
 
 .carrierHor {
     background-image: url(../img/carrierhor.png);
+    background-size: contain;
 }
 
 .carrierVer {
     background-image: url(../img/carrierver.png);
+    background-size: contain;
 }
 
 .battleshipHor {
     background-image: url(../img/battleshiphor.png);
+    background-size: contain;
 }
 
 .battleshipVer {
     background-image: url(../img/battleshipver.png);
+    background-size: contain;
+
 }
 
 .submarineHor {
     background-image: url(../img/submarinehor.png);
+    background-size: contain;
 }
 
 .submarineVer {
     background-image: url(../img/submarinever.png);
+    background-size: contain;
 }
 
 .destroyerHor {
     background-image: url(../img/destroyerhor.png);
+    background-size: contain;
 }
 
 .destroyerVer {
     background-image: url(../img/destroyerver.png);
+    background-size: contain;
 }
 
 .patrolboatHor {
     background-image: url(../img/patrolboathor.png);
+    background-size: contain;
+
 }
 
 .patrolboatVer {
     background-image: url(../img/patrolboatver.png);
+    background-size: contain;
 }
 
 .sidebar {

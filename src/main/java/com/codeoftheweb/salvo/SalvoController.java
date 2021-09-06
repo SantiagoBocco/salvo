@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,6 +54,46 @@ public class SalvoController {
     return dto;
     }
 
+    @PostMapping("/games")
+    public ResponseEntity<Map<String, Object>> createGame (Authentication authentication) {
+        if (isGuest(authentication)){
+            return new ResponseEntity<>(makeMap("error","No name"), HttpStatus.FORBIDDEN);}
+        else{
+            Game newGame = new Game(LocalDateTime.now());
+            gameRepository.save(newGame);
+            Player currentPlayer = playerRepository.findByUserName(authentication.getName());
+            GamePlayer newGamePlayer = new GamePlayer (newGame, currentPlayer, LocalDateTime.now());
+            gamePlayerRepository.save(newGamePlayer);
+            return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);
+        }
+    }
+
+    @PostMapping("/game/{nn}/players")
+    public ResponseEntity<Map<String,Object>> joinGame(@PathVariable Long nn, Authentication authentication){
+        if (isGuest(authentication)){
+            return new ResponseEntity<>(makeMap("error", "Usuario no ingresado"), HttpStatus.UNAUTHORIZED);}
+        else{
+            Player currentPlayer = playerRepository.findByUserName(authentication.getName());
+            if(gameRepository.findById(nn).isPresent()){
+                if(gameRepository.findById(nn).get().getGamePlayers().size() == 2){
+                    return new ResponseEntity<>(makeMap("error","El juego esta lleno"), HttpStatus.FORBIDDEN);}
+                else{
+                    if(gameRepository.findById(nn).get().getGamePlayers().stream().findFirst().get().getPlayer().getId() == currentPlayer.getId()){
+                        return new ResponseEntity<>(makeMap("error", "El usuario ya esta conectado"), HttpStatus.FORBIDDEN);}
+                else{
+                    Game joinedGame = gameRepository.findById(nn).get();
+                    GamePlayer newGamePlayer = new GamePlayer(joinedGame, currentPlayer, LocalDateTime.now());
+                    gamePlayerRepository.save(newGamePlayer);
+                    return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);}
+                }
+            }
+        else{
+                return new ResponseEntity<>(makeMap("error","No existe el juego"), HttpStatus.FORBIDDEN);}
+            }
+    }
+
+
+
     @PostMapping("/players")
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String email, @RequestParam String password) {
         if (email.isEmpty()) {
@@ -73,13 +114,14 @@ public class SalvoController {
         return map;
     }
 
-    @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String, Object> findGamePlayer(@PathVariable Long gamePlayerId) {
-        
-        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).get();
-        
-        return gamePlayer.makeGameViewDTO();
-        }
+    @RequestMapping("/game_view/{nn}")
+    public ResponseEntity<Map<String, Object>> findGamePlayer(@PathVariable Long nn, Authentication authentication) {
+        GamePlayer gamePlayer = gamePlayerRepository.findById(nn).get();
+        if(gamePlayer.getPlayer().getId() != playerRepository.findByUserName(authentication.getName()).getId()){
+            return new ResponseEntity<>(makeMap("error","NO HAGAS TRAMPA"), HttpStatus.UNAUTHORIZED);}
+        else{
+            return new ResponseEntity<>(gamePlayer.makeGameViewDTO(), HttpStatus.ACCEPTED);}
+    }
 
     }
 

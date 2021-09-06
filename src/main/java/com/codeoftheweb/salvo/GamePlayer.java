@@ -4,10 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -33,6 +30,14 @@ public class GamePlayer {
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     private Set<Salvo> salvo;
+
+    @ElementCollection
+    @Column(name="hits_self")
+    private List<String> self = new ArrayList<>();
+
+    @ElementCollection
+    @Column(name="hits_opponent")
+    private List<String> opponent = new ArrayList<>();
 
     public GamePlayer() { }
 
@@ -69,10 +74,18 @@ public class GamePlayer {
         return dto;
     }
 
+    public Map<String, Object> makeHitsDTO(){
+        Map <String, Object> dto = new LinkedHashMap<>();
+        dto.put("self", self);
+        dto.put("opponent",opponent);
+        return dto;
+    }
+
     public Map<String, Object> makeGameViewDTO(){
         Map<String, Object>     dto = new LinkedHashMap<>();
         dto.put("id",   this.getGame().getId());
         dto.put("created", this.getGame().getCreationDate());
+        dto.put("gameState", "PLACESHIPS");
         dto.put("gamePlayers",this.getGame().getGamePlayers()
                 .stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
@@ -90,6 +103,8 @@ public class GamePlayer {
                         .map(salvo -> salvo.makeSalvoDTO())
                 )
                 .collect(Collectors.toList()));
+
+        dto.put("hits", this.makeHitsDTO());
 
         return dto;
     }

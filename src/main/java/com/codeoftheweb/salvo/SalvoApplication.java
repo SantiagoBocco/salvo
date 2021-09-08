@@ -167,19 +167,22 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter{
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+
+		//Acá doy los permisos de a que puede acceder cada usuario dependiendo de sus roles
+
 		http.authorizeRequests()
-				//Acá doy los permisos de a que puede acceder cada usuario dependiendo de sus roles
-
-				//.antMatchers("/admin/").hasAuthority("ADMIN")
-
-				.antMatchers("/api/players").permitAll()
-				.antMatchers("/api/games").permitAll()
 				.antMatchers("/api/login").permitAll()
+				.antMatchers("/api/players").permitAll()
 				.antMatchers("/web/**").permitAll()
-				.antMatchers("**").hasAuthority("PLAYER")
-		//.and()
-		//.formLogin()
-		;
+				.antMatchers("/api/games").permitAll()
+				.antMatchers("/h2-console/**").permitAll()
+				.and().headers().frameOptions().disable()
+				.and().csrf().ignoringAntMatchers("/h2-console/**")
+				.and().cors().disable();
+
+		http.authorizeRequests()
+				.antMatchers("/api/game_view/**").hasAuthority("PLAYER")
+				.antMatchers("**").hasAuthority("PLAYER");
 
 		http.formLogin()
 				.usernameParameter("name")

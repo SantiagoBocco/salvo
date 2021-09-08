@@ -8,10 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -75,6 +72,7 @@ public class SalvoController {
         else{
             Player currentPlayer = playerRepository.findByUserName(authentication.getName());
             if(gameRepository.findById(nn).isPresent()){
+
                 if(gameRepository.findById(nn).get().getGamePlayers().size() == 2){
                     return new ResponseEntity<>(makeMap("error","El juego esta lleno"), HttpStatus.FORBIDDEN);}
                 else{
@@ -91,7 +89,6 @@ public class SalvoController {
                 return new ResponseEntity<>(makeMap("error","No existe el juego"), HttpStatus.FORBIDDEN);}
             }
     }
-
 
 
     @PostMapping("/players")
@@ -122,6 +119,29 @@ public class SalvoController {
         else{
             return new ResponseEntity<>(gamePlayer.makeGameViewDTO(), HttpStatus.ACCEPTED);}
     }
+
+    @PostMapping("/games/players/{nn}/ships")
+    public ResponseEntity<Map<String, Object>>  placeShip(Authentication authentication, @PathVariable Long nn, @RequestBody List<Ship> ships) {
+
+        Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(nn);
+
+        if(isGuest(authentication)) {
+            return new ResponseEntity<>(makeMap("error","No estas logeado"), HttpStatus.UNAUTHORIZED);}
+
+        if(gamePlayer.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error","No existe gameplay"), HttpStatus.UNAUTHORIZED);}
+
+        if(playerRepository.findByUserName(authentication.getName()).getGamePlayers().stream().noneMatch(gp -> gp.equals(gamePlayer.get()))) {
+            return new ResponseEntity<>(makeMap("error","No coincide gameplayer con player"), HttpStatus.UNAUTHORIZED);}
+
+        if(ships.size() != 5){
+            return new ResponseEntity<>(makeMap("error","No son 5 barcos"), HttpStatus.FORBIDDEN);}
+
+        if(gamePlayer.get().getShip().size() != 0){
+            return new ResponseEntity<>(makeMap("error","No se pueden colocar mas barcos"), HttpStatus.FORBIDDEN);}
+
+
+        return new ResponseEntity<>(makeMap("esta bien","Esta god"), HttpStatus.ACCEPTED); }
 
     }
 

@@ -27,6 +27,10 @@ public class SalvoController {
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Autowired
+    private ShipRepository shipRepository;
+
+
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
@@ -137,11 +141,56 @@ public class SalvoController {
         if(ships.size() != 5){
             return new ResponseEntity<>(makeMap("error","No son 5 barcos"), HttpStatus.FORBIDDEN);}
 
-        if(gamePlayer.get().getShip().size() != 0){
+        if(gamePlayer.get().getShips().size() != 0){
             return new ResponseEntity<>(makeMap("error","No se pueden colocar mas barcos"), HttpStatus.FORBIDDEN);}
 
+        for(Ship newShip: ships) {
+            if ((newShip.getType().equals("destroyer")) && (newShip.getShipLocations().size() != 3)){
+                return new ResponseEntity<>(makeMap("error","El tamaño del barco 'Destroyer' deberia ser de 3 casillas"), HttpStatus.FORBIDDEN);
+            }
+            if ((newShip.getType().equals("patrolboat")) && (newShip.getShipLocations().size() != 2)){
+                return new ResponseEntity<>(makeMap("error","El tamaño del barco 'Patrol boat' deberia ser de 2 casillas"), HttpStatus.FORBIDDEN);
+            }
+            if ((newShip.getType().equals("submarine")) && (newShip.getShipLocations().size() != 3)){
+                return new ResponseEntity<>(makeMap("error","El tamaño del barco 'Submarine' deberia ser de 3 casillas"), HttpStatus.FORBIDDEN);
+            }
+            if ((newShip.getType().equals("battleship")) && (newShip.getShipLocations().size() != 4)){
+                return new ResponseEntity<>(makeMap("error","El tamaño del barco 'Battleship' deberia ser de 4 casillas"), HttpStatus.FORBIDDEN);
+            }
+            if ((newShip.getType().equals("carrier")) && (newShip.getShipLocations().size() != 5)){
+                return new ResponseEntity<>(makeMap("error","El tamaño del barco 'Carrier' deberia ser de 5 casillas"), HttpStatus.FORBIDDEN);
+            } }
 
-        return new ResponseEntity<>(makeMap("esta bien","Esta god"), HttpStatus.ACCEPTED); }
+        for(Ship newShip: ships){
+            newShip.setGamePlayer(gamePlayer.get());
+            shipRepository.save(newShip);
+        }
+
+        return new ResponseEntity<>(makeMap("OK","Esta god"), HttpStatus.ACCEPTED); }
+
+    @GetMapping("/games/players/{nn}/ships")
+    public ResponseEntity<Map<String, Object>> placeShips(Authentication authentication, @PathVariable Long nn) {
+
+        Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(nn);
+
+        if (isGuest(authentication)) {
+            return new ResponseEntity<>(makeMap("error", "No estas logeado"), HttpStatus.UNAUTHORIZED);
+        }
+
+        if (gamePlayer.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error", "No existe ese GamePlayer"), HttpStatus.UNAUTHORIZED);
+        }
+
+        if (playerRepository.findByUserName(authentication.getName()).getGamePlayers().stream().noneMatch(gp -> gp.equals(gamePlayer.get()))) {
+            return new ResponseEntity<>(makeMap("error", "Ese GamePlayer no le corresponde"), HttpStatus.UNAUTHORIZED);
+        }
+
+        if (gamePlayer.get().getShips().size() == 0) {
+            return new ResponseEntity<>(makeMap("error", "No hay barcos"), HttpStatus.FORBIDDEN);
+        }
+
+        return new ResponseEntity<>(makeMap("ships", gamePlayer.get().getShips().stream().map(Ship::makeShipDTO).collect(Collectors.toList())), HttpStatus.ACCEPTED);}
 
     }
+
 

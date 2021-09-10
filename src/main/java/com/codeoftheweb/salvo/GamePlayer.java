@@ -26,7 +26,7 @@ public class GamePlayer {
     private Game game;
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
-    private Set<Ship> ship;
+    private Set<Ship> ships;
 
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     private Set<Salvo> salvo;
@@ -53,7 +53,7 @@ public class GamePlayer {
     public Player getPlayer() { return player; }
     public LocalDateTime getJoinDate() { return joinDate; }
     public Long getId() { return id; }
-    public Set<Ship> getShip() { return ship; }
+    public Set<Ship> getShips() { return ships; }
     public Set<Salvo> getSalvo() { return salvo; }
 
     public void setGame(Game game) { this.game = game; }
@@ -62,7 +62,7 @@ public class GamePlayer {
     public void setId(Long id) {
         this.id = id;
     }
-    public void setShip(Set<Ship> ship) { this.ship = ship; }
+    public void setShips(Set<Ship> ships) { this.ships = ships; }
     public void setSalvo(Set<Salvo> salvo) { this.salvo = salvo; }
 
     /*Mapa de string y objeto*/
@@ -91,7 +91,7 @@ public class GamePlayer {
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
                 .collect(Collectors.toList()));
 
-        dto.put("ships",this.getShip()
+        dto.put("ships",this.getShips()
                 .stream()
                 .map(ship -> ship.makeShipDTO())
                 .collect(Collectors.toList()));

@@ -110,11 +110,11 @@ public class SalvoApplication {
 		shipRepository.save(ship7);
 		shipRepository.save(ship8);
 
-		Salvo salvo1 = new Salvo(1L, Arrays.asList("H1", "H2"),gameplayer1);
-		Salvo salvo2 = new Salvo(2L, Arrays.asList("A1", "A2","A3"),gameplayer1);
+		Salvo salvo1 = new Salvo(1, Arrays.asList("H1", "H2"),gameplayer1);
+		Salvo salvo2 = new Salvo(2, Arrays.asList("A1", "A2","A3"),gameplayer1);
 
-		Salvo salvo3 = new Salvo(1L, Arrays.asList("H1", "H2"),gameplayer2);
-		Salvo salvo4 = new Salvo(2L, Arrays.asList("B1", "B2", "B3"),gameplayer2);
+		Salvo salvo3 = new Salvo(1, Arrays.asList("H1", "H2"),gameplayer2);
+		Salvo salvo4 = new Salvo(2, Arrays.asList("B1", "B2", "B3"),gameplayer2);
 
 		salvoRepository.save(salvo1);
 		salvoRepository.save(salvo2);

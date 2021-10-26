@@ -81,7 +81,7 @@ public class GamePlayer {
     public Map<String, Object> makeHitsDTO(){
         Map <String, Object> dto = new LinkedHashMap<>();
         GamePlayer opponent = getOpponent();
-        if(opponent == null){
+        if(opponent == null || this.getShips().size() == 0){
             dto.put("self", new ArrayList<>());
             dto.put("opponent", new ArrayList<>());
         }
@@ -193,7 +193,7 @@ public class GamePlayer {
         Map<String, Object>     dto = new LinkedHashMap<>();
         dto.put("id",   this.getGame().getId());
         dto.put("created", this.getGame().getCreationDate());
-        dto.put("gameState", "PLACESHIPS");
+        dto.put("gameState", gamestate());
         dto.put("gamePlayers",this.getGame().getGamePlayers()
                 .stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
@@ -218,4 +218,120 @@ public class GamePlayer {
     }
 
 
+public String gamestate () {
+
+        String gamestate = "UNDEFINED";
+
+        GamePlayer currentPlayer=this;
+        GamePlayer opponent = this.getOpponent();
+
+        // Obtener player 1
+        GamePlayer player1 = this.getGame().getGamePlayers().stream().min(Comparator.comparing(gamePlayer -> gamePlayer.getId())).get();
+        //System.out.println("player1:" + player1.getId());
+
+        // Obtener player 2
+        GamePlayer player2 = this.getGame().getGamePlayers().stream().max(Comparator.comparing(gamePlayer -> gamePlayer.getId())).get();
+        //System.out.println("player2:" + player2.getId());
+
+        int player1Turns = player1.getSalvo().size();
+        int player2Turns = player2.getSalvo().size();
+
+
+
+        // PLACESHIPS STATE
+        if (this.getShips().size() != 5) {
+            gamestate = "PLACESHIPS";
+            return gamestate;
+        }
+
+        // WAITING FOR OPPONENT STATE
+        if (this.getOpponent() == null) {
+            gamestate = "WAITINGFOROPP";
+            return gamestate;
+        }
+
+        // WAIT STATE
+        if (this.getOpponent().getShips().size() != 5) {
+            gamestate =  "WAIT";
+            return gamestate;
+        }
+
+
+        // TIE, WIN Y LOST STATE
+
+        if (this.getId()==player1.getId()){
+            if (this.barcosHundidos(opponent, currentPlayer)){
+                if (player1Turns>player2Turns){
+                    gamestate =  "WAIT";
+                    return gamestate;
+                }
+                else if (this.barcosHundidos(currentPlayer,opponent)){
+                    gamestate =  "TIE";
+                    return gamestate;
+
+                }
+                else {
+                    gamestate =  "WON";
+                    return gamestate;
+                }
+            }
+            if (this.barcosHundidos(currentPlayer,opponent)){
+                gamestate =  "LOST";
+                return gamestate;
+            }
+        }
+
+        else {
+            if(this.barcosHundidos(opponent,currentPlayer)){
+                if (this.barcosHundidos(currentPlayer,opponent)){
+                    gamestate = "TIE";
+                    return gamestate;
+                }
+                else {
+                    gamestate = "WIN";
+                    return gamestate;
+                }
+            }
+            if(this.barcosHundidos(currentPlayer,opponent)){
+                if (player1Turns==player2Turns){
+                    gamestate = "LOST";
+                    return gamestate;
+                }
+            }
+        }
+
+        //WAIT STATE
+
+        if (player1Turns > player2Turns && this.getId() == player1.getId()) {
+            gamestate =  "WAIT";
+            return gamestate;
+        }
+
+        if (player1Turns == player2Turns && this.getId() == player2.getId()) {
+            gamestate =  "WAIT";
+            return gamestate;
+        }
+
+        // PLAY STATE
+        if (this.getOpponent().getShips().size() == 5) {
+            gamestate =  "PLAY";
+            return gamestate;
+        }
+
+        return gamestate;
+    }
+
+    private boolean barcosHundidos(GamePlayer gpBarcos, GamePlayer gpSalvos) {
+
+        GamePlayer opponent = this.getOpponent();
+
+        if (!gpBarcos.getShips().isEmpty() && !gpSalvos.getSalvo().isEmpty()) {
+            return  gpSalvos.getSalvo()
+                    .stream().flatMap(salvo -> salvo.getSalvoLocations().stream()).collect(Collectors.toList())
+                    .containsAll(gpBarcos.getShips()
+                            .stream().flatMap(ship -> ship.getShipLocations().stream())
+                            .collect(Collectors.toList()));
+        }
+        return false;
+    }
 }

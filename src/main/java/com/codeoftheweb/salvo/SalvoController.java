@@ -33,6 +33,9 @@ public class SalvoController {
     @Autowired
     private SalvoRepository salvoRepository;
 
+    @Autowired
+    private ScoreRepository scoreRepository;
+
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
@@ -120,12 +123,32 @@ public class SalvoController {
 
     @RequestMapping("/game_view/{nn}")
     public ResponseEntity<Map<String, Object>> findGamePlayer(@PathVariable Long nn, Authentication authentication) {
-        GamePlayer gamePlayer = gamePlayerRepository.findById(nn).get();
-        if(gamePlayer.getPlayer().getId() != playerRepository.findByUserName(authentication.getName()).getId()){
+        Optional<GamePlayer> gamePlayer = gamePlayerRepository.findById(nn);
+        if (gamePlayer.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error", "No existe el gamePlayer"), HttpStatus.UNAUTHORIZED);
+        }
+
+        //(Float score, LocalDateTime finishDate, Player player, Game game)//
+
+        if(gamePlayer.get().getPlayer().getId() != playerRepository.findByUserName(authentication.getName()).getId()){
             return new ResponseEntity<>(makeMap("error","NO HAGAS TRAMPA"), HttpStatus.UNAUTHORIZED);}
         else{
-            return new ResponseEntity<>(gamePlayer.makeGameViewDTO(), HttpStatus.ACCEPTED);}
+            if(gamePlayer.get().gamestate().equals("WON")){
+                Score puntaje= new Score(1f, LocalDateTime.now(),gamePlayer.get().getPlayer(),gamePlayer.get().getGame());
+                scoreRepository.save(puntaje);
+            }
+            if (gamePlayer.get().gamestate().equals("TIE")){
+                Score puntaje= new Score(0.5f, LocalDateTime.now(),gamePlayer.get().getPlayer(),gamePlayer.get().getGame());
+                scoreRepository.save(puntaje);
+            }
+            if (gamePlayer.get().gamestate().equals("LOST")){
+                Score puntaje= new Score(0f, LocalDateTime.now(),gamePlayer.get().getPlayer(),gamePlayer.get().getGame());
+                scoreRepository.save(puntaje);
+            }
+            return new ResponseEntity<>(gamePlayer.get().makeGameViewDTO(), HttpStatus.ACCEPTED);
+        }
     }
+
 
     @PostMapping("/games/players/{nn}/ships")
     public ResponseEntity<Map<String, Object>>  placeShip(Authentication authentication, @PathVariable Long nn, @RequestBody List<Ship> ships) {
@@ -170,6 +193,7 @@ public class SalvoController {
         }
 
         return new ResponseEntity<>(makeMap("OK","Esta god"), HttpStatus.ACCEPTED); }
+
 
     @GetMapping("/games/players/{nn}/ships")
     public ResponseEntity<Map<String, Object>> placeShips(Authentication authentication, @PathVariable Long nn) {
@@ -237,9 +261,7 @@ public class SalvoController {
 
         if (gamePlayer1.get().getId() < gamePlayer2.get().getId()) {
             if (gamePlayer1.get().getSalvo().size() == gamePlayer2.get().getSalvo().size()) {
-                salvoes.setGamePlayer(gamePlayer1.get());
-                salvoes.setTurn(gamePlayer1.get().getSalvo().size()+1);
-                salvoRepository.save(salvoes);
+                salvoRepository.save(new Salvo(gamePlayer1.get().getSalvo().size()+1, salvoes.getSalvoLocations(),gamePlayer1.get()));
                 return new ResponseEntity<>(makeMap("OK", "Misiles lanzados"), HttpStatus.CREATED);
 
             }
@@ -249,9 +271,7 @@ public class SalvoController {
         }
         else {
             if (gamePlayer1.get().getSalvo().size() < gamePlayer2.get().getSalvo().size()) {
-                salvoes.setGamePlayer(gamePlayer1.get());
-                salvoes.setTurn(gamePlayer1.get().getSalvo().size()+1);
-                salvoRepository.save(salvoes);
+                salvoRepository.save(new Salvo(gamePlayer1.get().getSalvo().size()+1, salvoes.getSalvoLocations(),gamePlayer1.get()));
                 return new ResponseEntity<>(makeMap("OK", "Misiles lanzados"), HttpStatus.CREATED);
             }
             else {
